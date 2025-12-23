@@ -4,34 +4,44 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 interface Quote {
-  content: string,
-  author: string,
-  loading: boolean
+  q: string,
+  a: string | null
 }
 
 function App() {
-  const [quote, setQuote] = useState(null);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [currentQuote, setCurrentQuote] = useState<Quote | null>(null)
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchQuote = async () => {
+  const fetchQuote = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        const response = await fetch("https://corsproxy.io/?https://zenquotes.io/api/random");
+        const response = await fetch("https://corsproxy.io/?https://zenquotes.io/api/quotes");
         if (!response.ok) {
-          throw new Error(`${response.status}`);
+          throw new Error(`Network response was not ok: ${response.status}`);
         }
-        const data = await response.json();
-        console.log(data);
+        const data: Quote[] = await response.json();
+        setQuotes(data)
+        setCurrentQuote(data[Math.floor(Math.random() * data.length)])
       } catch (error) {
-        console.error(error);
+        if (error instanceof Error) setError(error.message) 
+        else setError("Unknown Error")
+      } finally {
+        setLoading(false)
       }
     }
-    
+
+  useEffect(() => {    
     fetchQuote()
   }, [])
 
   return (
     <>
-      
+      <p>{currentQuote?.q}</p>
+      <p>- {currentQuote?.a}</p>
+      <button onClick={fetchQuote}>New Quote</button>
     </>
   )
 }
