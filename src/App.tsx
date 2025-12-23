@@ -10,6 +10,7 @@ function App() {
   const [currentQuote, setCurrentQuote] = useState<Quote | null>(null)
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [fade, setFade] = useState(false);
 
   const fetchQuote = async () => {
       setLoading(true);
@@ -34,14 +35,27 @@ function App() {
     fetchQuote()
   }, [])
 
+  useEffect(() => {
+    setFade(false);
+    const timeout = setTimeout(() => setFade(true), 100)
+    return () => clearTimeout(timeout)
+  }, [currentQuote])
+
   return (
     <div className="font-serif flex flex-col justify-around items-center absolute top-1/2 left-1/2 -translate-1/2 px-8 py-8 h-[320px] w-[375px] bg-amber-100 rounded-lg shadow-md sm:w-[450px] sm:h-[350px] sm:px-10 sm:py-10">
-      {/* <h1 className="text-center text-lg font-bold sm:text-2xl">Random Quote Generator</h1> */}
-      <div className="flex flex-col justify-center grow">
-        <p className="text-amber-950 text-center text-lg mb-5 sm:text-xl"><b>"</b> {currentQuote?.q} <b>"</b></p>
-        <p className="text-amber-900 text-center uppercase tracking-widest text-lg italic">- {currentQuote?.a}</p>
+      <div key={currentQuote?.q} id="quoteContainer" className={`flex flex-col justify-center grow transition-opacity duration-100 ${fade ? 'opacity-100' : 'opacity-5'}`}>
+        <p className="text-amber-950 text-center text-lg mb-5 sm:text-xl">
+            <b>"</b> {currentQuote?.q} <b>"</b>
+        </p>
+        <p className="text-amber-900 text-center uppercase tracking-widest text-lg italic">
+          - {currentQuote?.a}
+        </p>
       </div>
-      <button className="mt-auto text-amber-50 bg-amber-600 px-6 py-2 w-fit rounded-sm cursor-pointer active:bg-amber-700 sm:text-lg sm:px-8 sm:py-2" onClick={fetchQuote}>Find Quote</button>
+      <button 
+        className="mt-auto text-amber-50 bg-amber-600 px-6 py-2 w-fit rounded-sm cursor-pointer active:bg-amber-700 sm:text-lg sm:px-8 sm:py-2" 
+        onClick={fetchQuote}>
+          Find Quote
+      </button>
     </div>
   )
 }
