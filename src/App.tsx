@@ -6,10 +6,13 @@ interface Quote {
 }
 
 function App() {
-  const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [currentQuote, setCurrentQuote] = useState<Quote | null>(null)
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [_quotes, setQuotes] = useState<Quote[]>([]);
+  const [currentQuote, setCurrentQuote] = useState<Quote | null>(() => {
+    const savedQuote = localStorage.getItem("lastQuote");
+    return savedQuote ? JSON.parse(savedQuote) : null;
+  })
+  const [_loading, setLoading] = useState<boolean>(true);
+  const [_error, setError] = useState<string | null>(null);
   const [fade, setFade] = useState(false);
 
   const fetchQuote = async () => {
@@ -32,8 +35,12 @@ function App() {
     }
 
   useEffect(() => {    
-    fetchQuote()
+    if (!currentQuote) fetchQuote()
   }, [])
+
+  useEffect(() => {
+    localStorage.setItem("lastQuote", JSON.stringify(currentQuote))
+  }, [currentQuote])
 
   useEffect(() => {
     setFade(false);
@@ -43,7 +50,7 @@ function App() {
 
   return (
     <div className="font-serif flex flex-col justify-around items-center absolute top-1/2 left-1/2 -translate-1/2 px-8 py-8 h-[320px] w-[375px] bg-amber-100 rounded-lg shadow-md sm:w-[450px] sm:h-[350px] sm:px-10 sm:py-10">
-      <div key={currentQuote?.q} id="quoteContainer" className={`flex flex-col justify-center grow transition-opacity duration-100 ${fade ? 'opacity-100' : 'opacity-5'}`}>
+      <div key={currentQuote?.q} id="quoteContainer" className={`flex flex-col justify-center grow transition-opacity duration-500 ${fade ? 'opacity-100' : 'opacity-5'}`}>
         <p className="text-amber-950 text-center text-lg mb-5 sm:text-xl">
             <b>"</b> {currentQuote?.q} <b>"</b>
         </p>
