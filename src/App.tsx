@@ -37,13 +37,13 @@ function App() {
   }, [])
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-1/2 px-7 py-5 h-[300px] w-[375px] flex flex-col justify-between bg-blue-200 rounded-lg">
-      <h1 className="text-center text-lg font-bold sm:text-xl">Random Quote Generator</h1>
-      <div>
-        <p className="text-justify text-lg mb-4 sm:text-xl"><b>"</b> {currentQuote?.q} <b>"</b></p>
-        <p className="text-right italic">- {currentQuote?.a}</p>
+    <div className="font-serif flex flex-col justify-around items-center absolute top-1/2 left-1/2 -translate-1/2 px-8 py-8 h-[320px] w-[375px] bg-amber-100 rounded-lg shadow-md sm:w-[450px] sm:h-[350px] sm:px-10 sm:py-10">
+      {/* <h1 className="text-center text-lg font-bold sm:text-2xl">Random Quote Generator</h1> */}
+      <div className="flex flex-col justify-center grow">
+        <p className="text-amber-950 text-center text-lg mb-5 sm:text-xl"><b>"</b> {currentQuote?.q} <b>"</b></p>
+        <p className="text-amber-900 text-center uppercase tracking-widest text-lg italic">- {currentQuote?.a}</p>
       </div>
-      <button className="bg-blue-400 px-3 py-1 w-fit rounded-sm cursor-pointer hover:bg-blue-500 active:bg-blue-600" onClick={fetchQuote}>New Quote</button>
+      <button className="mt-auto text-amber-50 bg-amber-600 px-6 py-2 w-fit rounded-sm cursor-pointer active:bg-amber-700 sm:text-lg sm:px-8 sm:py-2" onClick={fetchQuote}>Find Quote</button>
     </div>
   )
 }
